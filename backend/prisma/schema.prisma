@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A Release is the only model in the app. We deliberately don't
+// store a separate table for steps: since the same 7 steps apply
+// to every release, we keep their completion state as a JSON
+// object here (e.g. { "prs_merged": true, "tests_passing": false }).
+model Release {
+  id             String   @id @default(uuid())
+  name           String
+  date           DateTime
+  additionalInfo String?
+  steps          Json     @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

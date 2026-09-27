@@ -1,0 +1,20 @@
+name: Docker Build Check
+
+# Runs whenever backend code changes, so we catch a broken
+# Dockerfile before it ever reaches deployment.
+on:
+  push:
+    paths:
+      - "backend/**"
+  pull_request:
+    paths:
+      - "backend/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend Docker image
+        run: docker build -t releasecheck-backend ./backend
