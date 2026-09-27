@@ -1,16 +1,105 @@
-# React + Vite
+# ReleaseCheck — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The single-page web app for ReleaseCheck. Talks to the backend GraphQL API to list, create, edit, and delete releases, and to check off release steps.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React** — UI library
+- **Vite** — dev server and build tool
+- **Apollo Client** — GraphQL client, handles data fetching and caching
+- **React Router** — client-side routing (list page ↔ detail page)
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [Node.js](https://nodejs.org) v18 or higher
+- npm
+- The backend running — either locally (see `backend/README.md`) or a deployed URL
 
-## Expanding the ESLint configuration
+## 1. Install dependencies
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+cd frontend
+npm install
+```
+
+Expected output ends with something like:
+
+```
+added 180 packages in 8s
+```
+
+## 2. Point the app at your backend (optional)
+
+By default, the app looks for the API at `http://localhost:4000/`. If your backend runs somewhere else (e.g. a deployed Render URL), create a `.env` file:
+
+```bash
+# macOS / Linux
+cp .env.example .env
+
+# Windows (PowerShell)
+copy .env.example .env
+```
+
+Then edit `.env`:
+
+```
+VITE_API_URL=http://localhost:4000/
+```
+
+## 3. Start the dev server
+
+Make sure the backend is running first (see `backend/README.md`), then:
+
+```bash
+npm run dev
+```
+
+Expected output:
+
+```
+  VITE v5.x.x  ready in 350 ms
+
+  ➜  Local:   http://localhost:5173/
+```
+
+Open `http://localhost:5173` in your browser.
+
+## 4. Build for production
+
+```bash
+npm run build
+```
+
+This outputs static files into `dist/`, ready to deploy to any static host (Vercel, Netlify, etc.). Preview the production build locally with:
+
+```bash
+npm run preview
+```
+
+---
+
+## Features
+
+- View all releases in a table, sorted by date, with an auto-computed status (Planned / Ongoing / Done)
+- Create a new release (name + date, with optional notes)
+- Open a release to check/uncheck its 7 fixed steps — saves instantly, no page reload
+- Edit a release's name, date, or notes and save
+- Delete a release
+
+## Project Structure
+
+```
+frontend/
+├── src/
+│   ├── graphql/
+│   │   ├── queries.js       # GET_RELEASES, GET_RELEASE
+│   │   └── mutations.js     # create/update/toggle/delete
+│   ├── pages/
+│   │   ├── ReleasesListPage.jsx
+│   │   └── ReleaseDetailPage.jsx  # handles both "new" and "edit" modes
+│   ├── App.jsx               # routes + shared header
+│   ├── main.jsx               # Apollo + Router setup
+│   ├── apolloClient.js
+│   └── index.css
+└── package.json
+```
